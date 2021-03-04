@@ -10,6 +10,7 @@ class CSVGenerator
     cats = []
 
     text_file.each do |line|
+      line.chomp
       # first six characters
       # line_id = line[0..5]
 
@@ -37,17 +38,19 @@ class CSVGenerator
           # The category does not match, we therefore assume that the code is in fact a code and a category at the same time
           cat_code = code
           cats << {id: code, title: full}
-          newline = "\"#{code}\",\"#{full}\""
+          newline = "\"#{code}\",\"#{full.chomp}\""
           cats_file.puts newline
         end
         dx_code = code.gsub(cat_code, '')
         # edit this line to reformat/rearrange your CSV as desired
-        newline = "\"#{cat_code}\",\"#{dx_code}\",\"#{code}\",\"#{abbrev}\",\"#{full}\",\"#{cats.last[:title]}\""
+        # newline = "\"#{cat_code}\",\"#{dx_code}\",\"#{code}\",\"#{abbrev}\",\"#{full.chomp}\",\"#{cats.last[:title].chomp}\""
+        # We don't need the abbreviated one
+        newline = "#{cat_code}|#{dx_code}|#{code}|#{full.chomp}|#{cats.last[:title].chomp}"
         full_csv_file.puts newline
       else
         # add to categories CSV if not a specific diagnosis
         cats << {id: code, title: full}
-        newline = "\"#{code}\",\"#{full}\""
+        newline = "\"#{code}\",\"#{full.chomp}\""
         cats_file.puts newline
       end
     end
